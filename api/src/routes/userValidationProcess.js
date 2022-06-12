@@ -5,11 +5,15 @@ const bcrypt = require("bcrypt");
 const db = require("../db.js");
 const { sendSimpleEmail } = require("../nodemailer/nodemailer.js");
 
+function isNumeric(value) {
+  return /^-?\d+$/.test(value);
+}
+
 router.get("/userValidationProcess/:id", async (req, res) => {
   const { id } = req.params;
   console.log("Where? -->>", req.url);
   console.log("id", id);
-  if (!id) {
+  if (!id || !isNumeric(id)) {
     return res.status(400).json({
       error: "information required for user validation",
     });
@@ -22,7 +26,7 @@ router.get("/userValidationProcess/:id", async (req, res) => {
   });
   if (!userFound) {
     return res.status(401).json({
-      error: "email already exists",
+      error: "User not found",
     });
   }
   if (userFound.validated_email) {

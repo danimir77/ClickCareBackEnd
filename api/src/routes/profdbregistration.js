@@ -1,43 +1,55 @@
-const router = require("express").Router();
+const { Router } = require("express");
+const express = require("express");
 const passport = require("../passport/passport.js");
-
+const db = require("../db.js");
+const { sendEmailToValidate } = require("../nodemailer/nodemailer.js");
 //https://www.npmjs.com/package/validator
-// const {
-//   profValidationRules,
-
-//   validate,
-// } = require("../middleware/validator.js");
+const { profValidationRules, validate } = require("../middleware/validator.js");
 
 //----
-const db = require("../db.js");
-
+const router = Router();
+router.use(express.json());
+const cors = require("cors");
+router.use(cors());
 //----
 console.log("ENTRO A profdbregistration.js");
 
-router.post("/profdbregistration", async (req, res) => {
-  console.log("Where? -->>", req.url);
-  const { id_user, tuition, trainings, photo, cvu } = req.body;
-
-  const prodFound = await db.Users.findOne({
-    where: {
-      id: id_user,
-    },
-    raw: true,
-  });
-  if (prodFound) {
-    await db.Professionals.create({
-      id_user: id_user,
-      tuition: tuition,
-      trainings: trainings,
-      photo: photo,
-      cvu: cvu,
-    });
-    res.status(201).json({ message: "Professional created" });
-  } else {
-    return res.status(401).json({
-      error: "Usuer No exists",
-    });
+router.post(
+  "/profdbregistration",
+  profValidationRules(),
+  validate,
+  async (req, res) => {
+    console.log("Where? -->>", req.url);
+    try {
+      const { id_user, tuition, trainings, photo, cvu } = req.body;
+      const prodFound = await db.Users.findOne({
+        where: {
+          id: id_user,
+        },
+        raw: true,
+      });
+      if (prodFound) {
+        await db.Professionals.create({
+          tuition: tuition,
+          trainings: trainings,
+          photo: photo,
+          cvu: cvu,
+          userId: id_user,
+        });
+        const { id, email, name, surname } = prodFound;
+        sendEmailToValidate(email, id, name, surname);
+        res.status(201).json({ message: "Professional created" });
+      } else {
+        return res.status(401).json({
+          error: "Professional No exists",
+        });
+      }
+    } catch (e) {
+      return res.status(401).json({
+        error: e.message,
+      });
+    }
   }
-});
+);
 
 module.exports = router;

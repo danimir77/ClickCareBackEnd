@@ -5,7 +5,8 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const passport = require("passport");
 const db = require("../db.js");
 
-const GOOGLE_CLIENT_ID ="825635169719-nn4gs4ipvr3sr4i81ce5ogj7v624e02a.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =
+  "825635169719-nn4gs4ipvr3sr4i81ce5ogj7v624e02a.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
 GITHUB_CLIENT_ID = "your id";
@@ -41,8 +42,6 @@ passport.use(
 //     }
 //   }
 // ));
-
-
 
 // passport.use(
 //   new GithubStrategy(

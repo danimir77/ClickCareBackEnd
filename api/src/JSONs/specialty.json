@@ -1,0 +1,22 @@
+{
+  "specialities": [
+    {
+      "specialty": "Therapeutic Companion"
+    },
+    {
+      "specialty": "Nurse"
+    },
+    {
+      "specialty": "Doctor"
+    },
+    {
+      "specialty": "Kinesiologist"
+    },
+    {
+      "specialty": "Elderly Companion"
+    },
+    {
+      "specialty": "Curator"
+    }
+  ]
+}

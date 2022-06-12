@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db.js");
+const bcrypt = require("bcrypt");
 
 router.put("/edituser", async (req, res) => {
   const {
@@ -13,15 +14,20 @@ router.put("/edituser", async (req, res) => {
     age,
     document,
     phone2,
+    state,
+    city,
+    country,
   } = req.body;
-  const userFinded = await db.Users.findOne({
-    where: { email: email },
-  });
+
   try {
+    const userFinded = await db.Users.findOne({
+      where: { email: email },
+    });
     if (userFinded) {
+      const hash = bcrypt.hashSync(password, 10);
       await userFinded.update({
         email: email,
-        password: password,
+        password: hash,
         name: name,
         surname: surname,
         phone: phone,
@@ -29,6 +35,21 @@ router.put("/edituser", async (req, res) => {
         age: age,
         document: document,
         phone2: phone2,
+        stateId: state
+          ? (
+              await db.States.findOne({ where: { name: state } })
+            )?.id
+          : null,
+        cityId: city
+          ? (
+              await db.Cities.findOne({ where: { name: city } })
+            )?.id
+          : null,
+        countryId: country
+          ? (
+              await db.Countries.findOne({ where: { name: country } })
+            )?.id
+          : null,
       });
     }
     res.status(200).send("Se modificaron los datos correctamente");

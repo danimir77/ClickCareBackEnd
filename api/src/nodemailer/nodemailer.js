@@ -12,21 +12,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// const mailOptions = {
-//   from: auth.user,
-//   to: "dlorko@gmail.com",
-//   subject: "Sending Email using Node.js",
-//   text: "That was easy!",
-// };
-
-// transporter.sendMail(mailOptions, function (error, info) {
-//   if (error) {
-//     console.log(error);
-//   } else {
-//     console.log("Email sent: " + info.response);
-//   }
-// });
-
 function sendEmailToValidate(emailTo, userId, name, surname) {
   // let hashId = bcrypt.hashSync(String(userId), 10);
   // hashId.replaceAll('/', "SLASH");

@@ -5,10 +5,6 @@ const path = require("path");
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env;
 
-// const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/food`, {
-// const sequelize = new Sequelize(
-//   `postgres://postgres:admin@localhost:5432/food`,
-
 const sequelize = new Sequelize(
   `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
   {
@@ -41,101 +37,33 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-// En sequelize.models están todos los modelos importados como propiedades
-// Para relacionarlos hacemos un destructuring
-//<<<<<<< passport
-// const { User  } = sequelize.models;
-
-// Aca vendrian las relaciones
-// Product.hasMany(Reviews);
-// Recipe.belongsToMany(Diet, {
-//   through: "recipeDiet",
-// });
-// Diet.belongsToMany(Recipe, {
-//   through: "recipeDiet",
-// });
-
-//!---se mutea para generar las tablas en la base de datos
-const {
-  AgeRanges,
-  Cities,
-  Commissions,
-  Conditions,
-  Contracts,
-  Countries,
-  Posts,
-  Professionals,
-  Specialties,
-  States,
-  Taxes,
-  Users,
-} = sequelize.models;
-
-//<<<<<<< DNL_0608_2daMailyModelos
-// Professional.belongsToMany(AgeRange, { through: "ProfessionalsAgeranges" });
-// AgeRange.belongsToMany(Professional, { through: "ProfessionalsAgeranges" });
-
-// Professional.belongsToMany(Specialties, {
-//   through: "ProfessionalsSpecialties",
-// });
-// Specialties.belongsToMany(Professional, {
-//   through: "ProfessionalsSpecialties",
-// });
-
-// Users.hasOne(Cities);
-// Cities.belongsToMany(Users, { through: "UsersCities" });
-
-//1 User tiene un ESTADO. Y un ESTADO tiene muchos USUARIOS
-// Users.hasOne(States, { through: "UsersStates" });
-// States.belongsToMany(Users, { through: "UsersStates" });
-
-//DANIMIR -->> Añade clave StateID a la tabla Users
+const { Users, States, Cities, Countries, Professionals, Posts, Specialties } =
+  sequelize.models;
+// console.log(sequelize.models);
 States.hasMany(Users);
 Users.belongsTo(States);
-//=======
-// Professionals.belongsToMany(AgeRanges, { through: "ProfessionalsAgeranges" });
-// AgeRanges.belongsToMany(Professionals, { through: "ProfessionalsAgeranges" });
 
-// Professionals.belongsToMany(Specialties, {
-//   through: "ProfessionalsSpecialties",
-// });
-// Specialties.belongsToMany(Professionals, {
-//   through: "ProfessionalsSpecialties",
-// });
+Cities.hasMany(Users);
+Users.belongsTo(Cities);
 
-// Users.hasOne(Cities);
-// Cities.belongsToMany(Users, { through: "UsersCities" });
+Countries.hasMany(Users);
+Users.belongsTo(Countries);
 
-// Users.belongsToMany(States, { through: "UsersStates" });
-// States.belongsToMany(Users, { through: "UsersStates" });
-//>>>>>>> back_end
+Users.hasMany(Professionals);
+Professionals.belongsTo(Users);
 
-// Users.hasOne(Countries);
-// Countries.belongsToMany(Users, { through: "UsersCountries" });
+Countries.hasMany(States, {
+  foreignKey: "id_country",
+});
+States.hasMany(Cities, {
+  foreignKey: "id_state",
+});
 
-// Posts.hasOne(Cities);
-// Cities.belongsToMany(Posts, { through: "PostsCities" });
+Users.hasMany(Posts);
+Posts.belongsTo(Users);
 
-// Posts.hasOne(States);
-// States.belongsToMany(Posts, { through: "PostsStates" });
-
-// Posts.hasOne(Countries);
-// Countries.belongsToMany(Posts, { through: "PostsCountries" });
-
-// Users.hasMany(Posts);
-// Posts.belongsTo(Users);
-
-// Posts.belongsToMany(Conditions, { through: "PostsConditions" });
-// Conditions.belongsToMany(Posts, { through: "PostConditions" });
-
-//<<<<<<< DNL_0608_2daMailyModelos
-// Professional.hasMany(Contracts);
-// Contracts.belongsTo(Professional);
-//=======
-// Professionals.hasMany(Contracts);
-// Contracts.belongsTo(Professionals);
-//>>>>>>> back_end
-//>>>>>>> back_end
+Cities.hasMany(Posts);
+Posts.belongsTo(Cities);
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');
