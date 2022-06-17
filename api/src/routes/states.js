@@ -1,10 +1,8 @@
-const express = require("express");
-const router = express.Router();
+const { Router } = require("express");
+const router = require("./userdbregistration");
 const db = require("../db.js");
 const cors = require("cors");
 router.use(cors());
-
-console.log("ENTRO a statesRoute.js");
 
 const states = [
   "Misiones",
@@ -33,18 +31,16 @@ const states = [
   "Tierra del Fuego, Antártida e Islas del Atlántico Sur",
 ];
 
-router.post("/states", async (req, res) => {
-  console.log("Where? -->>", req.url);
-  const statesMaped = states.map((prov) => ({ name: prov }));
-  await db.States.bulkCreate(statesMaped)
-    .then(() => {
-      db.States.findAll().then((states) => {
-        res.json(states);
-      });
-    })
-    .catch((err) => {
-      res.send(err);
+router.get("/states", async (req, res) => {
+  const statesMaped = states.map((e) => e);
+  statesMaped.forEach((p) => {
+    // console.log(p);
+    db.States.create({
+      name: p,
     });
+  });
+  const states3 = await db.States.findAll();
+  res.json(states3);
 });
 
 module.exports = router;

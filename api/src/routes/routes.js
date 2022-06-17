@@ -17,7 +17,8 @@ const GetCitiesByState = require("./GetCitiesByState");
 const userdblogout = require("./userdblogout");
 const GetCountries = require("./GetCountries");
 const postgenerator = require("./PostGenerator.js");
-const addspecialty = require("./AddSpecialty");
+const addspecialty = require("./AddSpecialty.js");
+const auctions = require("./auctions.js");
 
 //Routes and middlewares
 router.use("/", userdblogin);
@@ -37,5 +38,6 @@ router.use("/", userdblogout);
 router.use("/", GetCountries);
 router.use("/", postgenerator);
 router.use("/", addspecialty);
+router.use("/", auctions);
 
 module.exports = router;

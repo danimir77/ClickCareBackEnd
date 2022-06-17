@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
     user: auth.user,
     pass: auth.pass,
   },
+  //debug: true, // show debug output
+  //logger: true, // log information in console
+  //method: "PUT",
 });
 
 function sendEmailToValidate(emailTo, userId, name, surname) {
@@ -24,8 +27,9 @@ function sendEmailToValidate(emailTo, userId, name, surname) {
       html: `<p>Hello ${name} ${surname},
       ClickCare is a platform that allows you to manage your health and your life.</p>
       <p>To validate your account, please click on the link. If you have any questions, please contact us.</p>
-      <p>Thank you for using ClickCare.</p><a href="${process.env.URL_MAIL}/api/userValidationProcess/${userId}">Click here</a><br>`,
-    };
+      <p>Thank you for using ClickCare.</p><a href="${process.env.URL_CLIENT}/welcome/${userId}">Click here</a><br>
+      `,
+    }; //userValidationProcess
 
     console.log("mailOptions", mailOptions);
     transporter.sendMail(mailOptions, function (error, info) {

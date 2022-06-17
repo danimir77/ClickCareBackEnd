@@ -2,7 +2,8 @@ const router = require("express").Router();
 const passport = require("../passport/passport.js");
 const bcrypt = require("bcrypt");
 const { sendEmailToValidate } = require("../nodemailer/nodemailer.js");
-
+const cors = require("cors");
+router.use(cors());
 const db = require("../db.js");
 
 console.log("ENTRO a userResendValidationEmail.js");

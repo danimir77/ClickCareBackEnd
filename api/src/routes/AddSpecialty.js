@@ -13,10 +13,13 @@ router.post("/addspecialty", async (req, res) => {
     };
     //Specialties
     obj.specialities = require("../JSONs/specialty.json").specialities;
+    const { count, rows } = await db.Specialties.findAndCountAll();
 
-    await db.Specialties.bulkCreate(obj.specialities);
-    obj.specialities = "";
-    res.status(200).send("Specialties loaded");
+    count === 0
+      ? (await db.Specialties.bulkCreate(obj.specialities),
+        (obj.specialities = ""),
+        res.status(200).send("Specialties loaded"))
+      : res.status(200).send("Specialties existing");
   } catch {
     res.status(400).json({ error: "During specialities Loaded to DB!" });
   }

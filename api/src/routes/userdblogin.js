@@ -9,6 +9,14 @@ const cookieParser = require("cookie-parser");
 const { userValidShortReg, validate } = require("../middleware/validator.js");
 //----
 const db = require("../db.js");
+const cors = require("cors");
+router.use(
+  cors({
+    origin: process.env.URL_CLIENT,
+    credentials: true,
+    allowedHeaders: "Content-Type, Authorization",
+  })
+);
 router.use(cookieParser());
 router.use(express.json());
 router.use(
@@ -52,6 +60,16 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
         error: "User not found",
       });
     }
+
+    if (userFound.active === 0) {
+      return res.status(401).json({ error: "User is inactive" });
+    }
+    if (userFound.validated_email === 0) {
+      return res
+        .status(401)
+        .json({ error: "User email is not validated", id: userFound.id });
+    }
+
     bcrypt.compare(password, userFound.password, (err, result) => {
       if (err) {
         return res.status(401).json({

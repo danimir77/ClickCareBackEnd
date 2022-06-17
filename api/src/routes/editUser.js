@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db.js");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
+router.use(cors());
 
 router.put("/edituser", async (req, res) => {
   const {

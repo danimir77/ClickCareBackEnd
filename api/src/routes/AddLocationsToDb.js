@@ -15,7 +15,8 @@ router.post("/AddLocationsToDb", async (req, res) => {
     };
     //COUNTRIES
     obj.countries = require("../JSONs/countries.json").countries;
-
+    const { count, rows } = await db.Countries.findAndCountAll();
+    if (count > 0) res.status(400).send("Datos existentes");
     try {
       await db.Countries.bulkCreate(obj.countries);
       obj.countries = "";

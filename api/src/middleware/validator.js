@@ -20,7 +20,7 @@ const userValidationRules = () => {
     body("password")
       .isString()
       .withMessage("Should be string")
-      .isLength({ min: 8 })
+      .isLength({ min: 4 })
       .withMessage("Should be at least 8 characters")
       .not()
       .isLowercase()
@@ -69,9 +69,9 @@ const userValidationRules = () => {
       .isLength({ min: 5 }, { max: 20 })
       .withMessage("Should be Between 5 and 20 characters")
       .isNumeric("en-US")
-      .withMessage("Should be numeric")
-      .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("Should be numeric"),
+    // .notEmpty()
+    // .withMessage("Should not be empty"),
   ];
 };
 //RECORDAR EXPORTARLO ABAJO!!
@@ -107,7 +107,7 @@ const userValidShortReg = () => {
     body("password")
       .isString()
       .withMessage("Should be string")
-      .isLength({ min: 8 })
+      .isLength({ min: 4 })
       .withMessage("Should be at least 8 characters")
       .not()
       .isLowercase()

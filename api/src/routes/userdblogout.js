@@ -2,6 +2,8 @@
 const express = require("express");
 const router = express.Router();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+router.use(cors());
 
 //----
 router.use(cookieParser());

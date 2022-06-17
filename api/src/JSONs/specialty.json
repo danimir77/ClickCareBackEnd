@@ -1,22 +1,22 @@
 {
   "specialities": [
     {
-      "specialty": "Therapeutic Companion"
+      "specialty": "Acompañante Terapéutico"
     },
     {
-      "specialty": "Nurse"
+      "specialty": "Enfermería"
     },
     {
       "specialty": "Doctor"
     },
     {
-      "specialty": "Kinesiologist"
+      "specialty": "Kinesiología"
     },
     {
-      "specialty": "Elderly Companion"
+      "specialty": "Acompañante de Adulto Mayor"
     },
     {
-      "specialty": "Curator"
+      "specialty": "Aplicaciones"
     }
   ]
 }
