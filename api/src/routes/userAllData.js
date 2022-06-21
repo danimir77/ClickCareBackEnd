@@ -29,7 +29,11 @@ router.get("/users", async (req, res) => {
       ],
     });
 
-    res.status(201).json(users);
+    if (users.length > 0) {
+      res.status(201).json(users);
+    } else {
+      res.status(422).json("Not found");
+    }
   } catch (e) {
     res.send(e);
   }
@@ -61,7 +65,95 @@ router.get("/user_professional", async (req, res) => {
       ],
     });
 
-    res.status(201).json(usersProfessionals);
+    if (usersProfessionals.length > 0) {
+      res.status(201).json(usersProfessionals);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (e) {
+    res.send(e);
+  }
+});
+
+router.get("/userDetalleById/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (id && Number.isInteger(parseInt(id))) {
+      const usersProfessionals = await db.Users.findAll({
+        where: { id: id },
+        include: [
+          {
+            model: db.Cities,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.States,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.Countries,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.Professionals,
+            // required: true,
+          },
+        ],
+      });
+
+      if (usersProfessionals.length > 0) {
+        res.status(201).json(usersProfessionals);
+      } else {
+        res.status(422).json("Not found");
+      }
+    } else {
+      res.status(422).send("No envió un ID");
+    }
+  } catch (e) {
+    res.send(e);
+  }
+});
+
+router.get("/userProfessionalByID/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (id && Number.isInteger(parseInt(id))) {
+      const usersProfessionals = await db.Users.findAll({
+        where: { id: id },
+        include: [
+          {
+            model: db.Cities,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.States,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.Countries,
+            attributes: ["name"],
+            //required: true,
+          },
+          {
+            model: db.Professionals,
+            // required: true,
+          },
+        ],
+      });
+
+      if (usersProfessionals.length > 0) {
+        res.status(201).json(usersProfessionals);
+      } else {
+        res.status(422).json("Not found");
+      }
+    } else {
+      res.status(422).send("No envió un ID");
+    }
   } catch (e) {
     res.send(e);
   }

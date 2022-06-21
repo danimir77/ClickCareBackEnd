@@ -25,4 +25,20 @@ router.post("/addspecialty", async (req, res) => {
   }
 });
 
+router.get("/getspecialty", async (req, res) => {
+  try {
+    const specialty = await db.Specialties.findAll({
+      attributes: ["id", "specialty"],
+    });
+
+    if (specialty.length > 0) {
+      res.status(201).json(specialty);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (e) {
+    res.send(e);
+  }
+});
+
 module.exports = router;

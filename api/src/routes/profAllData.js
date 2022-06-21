@@ -10,7 +10,55 @@ router.get("/professionals", async (req, res) => {
   try {
     const professional = await db.Professionals.findAll();
 
-    res.status(201).json(professional);
+    if (professional.length > 0) {
+      res.status(201).json(professional);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (e) {
+    res.send(e);
+  }
+});
+
+router.get("/professionalsById/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (id && Number.isInteger(parseInt(id))) {
+      const professional = await db.Professionals.findAll({
+        where: { id: id },
+        include: [
+          {
+            model: db.Users,
+            // required: true,
+            include: [
+              {
+                model: db.Cities,
+                attributes: ["name"],
+                //required: true,
+              },
+              {
+                model: db.States,
+                attributes: ["name"],
+                //required: true,
+              },
+              {
+                model: db.Countries,
+                attributes: ["name"],
+                //required: true,
+              },
+            ],
+          },
+        ],
+      });
+
+      if (professional.length > 0) {
+        res.status(201).json(professional);
+      } else {
+        res.status(422).json("Not found");
+      }
+    } else {
+      res.status(422).send("No envió un ID");
+    }
   } catch (e) {
     res.send(e);
   }

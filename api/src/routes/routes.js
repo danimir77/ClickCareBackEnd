@@ -19,6 +19,7 @@ const GetCountries = require("./GetCountries");
 const postgenerator = require("./PostGenerator.js");
 const addspecialty = require("./AddSpecialty.js");
 const auctions = require("./auctions.js");
+const contracts = require("./contracts");
 
 //Routes and middlewares
 router.use("/", userdblogin);
@@ -39,5 +40,6 @@ router.use("/", GetCountries);
 router.use("/", postgenerator);
 router.use("/", addspecialty);
 router.use("/", auctions);
+router.use("/", contracts);
 
 module.exports = router;

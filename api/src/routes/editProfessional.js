@@ -38,7 +38,7 @@ router.put("/editprofessional", async (req, res) => {
       ? (await db.Cities.findOne({ where: { name: city } }))?.id_state
       : null;
     const countryId = country
-      ? (await db.Cities.findOne({ where: { name: country } }))?.id
+      ? (await db.Countries.findOne({ where: { name: country } }))?.id
       : null;
 
     const profFinded = await db.Professionals.findOne({

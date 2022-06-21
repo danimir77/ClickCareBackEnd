@@ -18,9 +18,9 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
   dialect: "mysql",
   port: DB_PORT,
-  dialectOptions: {
-    mysql2: "^2.3.3",
-  },
+  // dialectOptions: {
+  //   mysql2: "^2.3.3",
+  // },
 });
 
 const basename = path.basename(__filename);
@@ -56,6 +56,7 @@ const {
   Posts,
   Specialties,
   Auctions,
+  Contracts,
 } = sequelize.models;
 // console.log(sequelize.models);
 States.hasMany(Users);
@@ -100,6 +101,12 @@ Auctions.belongsTo(Users);
 
 Specialties.hasMany(Posts);
 Posts.belongsTo(Specialties);
+
+Posts.hasMany(Contracts);
+Contracts.belongsTo(Posts);
+
+Auctions.hasMany(Contracts);
+Contracts.belongsTo(Auctions);
 
 module.exports = {
   ...sequelize.models, // para poder importar los modelos así: const { Product, User } = require('./db.js');

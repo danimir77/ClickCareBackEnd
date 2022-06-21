@@ -12,7 +12,7 @@ const db = require("../db.js");
 const cors = require("cors");
 router.use(
   cors({
-    origin: process.env.URL_CLIENT,
+    origin: "*", //process.env.URL_CLIENT
     credentials: true,
     allowedHeaders: "Content-Type, Authorization",
   })
@@ -114,6 +114,8 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
       res.cookie("userBackend", tokenBack, {
         expires: new Date(Date.now() + 3 * 60 * 60 * 1000), //3 hours expiration
         httpOnly: true,
+        sameSite: none,
+        secure: true,
       });
       // COOKIE FRONTEND
       res.cookie(
@@ -122,6 +124,8 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
         {
           expires: new Date(Date.now() + 3 * 60 * 60 * 1000), //3 hours expiration
           httpOnly: false,
+          sameSite: none,
+          secure: true,
         }
       );
 
