@@ -7,18 +7,21 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 
 const { userValidShortReg, validate } = require("../middleware/validator.js");
-//----
+
 const db = require("../db.js");
 const cors = require("cors");
+
 router.use(
   cors({
-    origin: "*", //process.env.URL_CLIENT
+    origin: true, //process.env.URL_CLIENT,
     credentials: true,
-    allowedHeaders: "Content-Type, Authorization",
+    //allowedHeaders: "Content-Type, Authorization",
   })
 );
 router.use(cookieParser());
+
 router.use(express.json());
+
 router.use(
   express.urlencoded({
     extended: true,
@@ -28,6 +31,7 @@ router.use(
 router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const userFound = await db.Users.findOne({
       where: {
         email: email,
@@ -88,6 +92,7 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
         lastname: userFound.lastname,
         phone: userFound.phone,
         address: userFound.address,
+        age: userFound.age,
         // countryId: userFound.countryId,
         countryName: userFound["country.name"],
         city: userFound["city.name"],
@@ -99,9 +104,15 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
         professionalPhoto: userFound["professionals.photo"],
         professionalCvu: userFound["professionals.cvu"],
         professionalBalance: userFound["professionals.balance"],
-        professionalCreatedAt: userFound["professionals.createdAt"],
-        professionalUpdatedAt: userFound["professionals.updatedAt"],
+        professionalnivelDeEstudio: userFound["professionals.nivelDeEstudio"],
+        professionalinstitucion: userFound["professionals.institucion"],
+        professionaltitulo: userFound["professionals.titulo"],
+        professionaldate_inicioEstudio:
+          userFound["professionals.date_inicioEstudio"],
+        professionaldate_finicioEstudio:
+          userFound["professionals.date_finicioEstudio"],
       };
+
       // console.log("userInfoFront", userInfoFront);
       const tokenFront = jwt.sign(userInfoFront, process.env.TOKENKEY, {
         expiresIn: "3h",
@@ -112,22 +123,21 @@ router.post("/userdblogin", userValidShortReg(), validate, async (req, res) => {
 
       // COOKIE BACKEND
       res.cookie("userBackend", tokenBack, {
+        //domain: "*",
         expires: new Date(Date.now() + 3 * 60 * 60 * 1000), //3 hours expiration
         httpOnly: true,
-        sameSite: none,
+        sameSite: "none",
         secure: true,
       });
       // COOKIE FRONTEND
-      res.cookie(
-        "SessionUserClickCare",
-        { userId: userFound.id },
-        {
-          expires: new Date(Date.now() + 3 * 60 * 60 * 1000), //3 hours expiration
-          httpOnly: false,
-          sameSite: none,
-          secure: true,
-        }
-      );
+      const idToken = userFound.id;
+      res.cookie("SessionUserClickCare", idToken, {
+        //domain: "*",
+        expires: new Date(Date.now() + 3 * 60 * 60 * 1000), //3 hours expiration
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
 
       // RESPONSE
       res.status(200).json({

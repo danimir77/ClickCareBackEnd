@@ -144,6 +144,7 @@ router.get("/userProfessionalByID/:id", async (req, res) => {
             // required: true,
           },
         ],
+        raw: false,
       });
 
       if (usersProfessionals.length > 0) {

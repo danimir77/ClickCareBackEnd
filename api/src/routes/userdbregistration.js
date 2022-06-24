@@ -3,6 +3,16 @@ const express = require("express");
 const db = require("../db");
 const passport = require("../passport/passport.js");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+const mimeTypes = require("mime-types");
+const storage = multer.diskStorage({
+  destination: "C:/Users/Usuario/Desktop/prueba_imagenes/",
+  filename: function (req, file, cb) {
+    cb("", file.originalname + "." + mimeTypes.extension(file.mimetype));
+  },
+});
+const upload = multer({ storage: storage });
+
 const { sendEmailToValidate } = require("../nodemailer/nodemailer.js");
 //https://www.npmjs.com/package/validator
 const { userValidationRules, validate } = require("../middleware/validator.js");
@@ -66,7 +76,7 @@ router.post(
       let mensaje = {};
 
       if (created) {
-        mensaje = { message: "User created" };
+        mensaje = { userCreated: userCreated.id, message: "User created" };
 
         const { id, email, name, surname } = userCreated;
         res.status(201).json(mensaje);
@@ -80,5 +90,9 @@ router.post(
     }
   }
 );
+
+router.post("/upload", upload.single("image"), (req, res, next) => {
+  res.send("todo bien");
+});
 
 module.exports = router;

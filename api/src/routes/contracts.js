@@ -9,7 +9,7 @@ router.use(cors());
 
 router.post("/addContracts", async (req, res) => {
   try {
-    const { date, offer, hour, postId, auctionsId } = req.body;
+    const { date, offer, hour, postId, auctionId } = req.body;
     const [contractCreates, created] = await db.Contracts.findOrCreate({
       where: {
         [Op.and]: [{ postId: postId }, { status: "active" }],
@@ -18,8 +18,8 @@ router.post("/addContracts", async (req, res) => {
         date: date,
         price: offer,
         hour: hour,
-        auctionsId: auctionsId,
-        postsId: postsId,
+        auctionId: auctionId,
+        postId: postId,
       },
     });
     if (created) {
@@ -29,10 +29,11 @@ router.post("/addContracts", async (req, res) => {
         },
         {
           where: {
-            id: auctionsId,
+            id: auctionId,
           },
         }
       );
+      sender(postId, auctionId);
       res.status(200).send("Contract created");
     } else {
       res.status(422).send("Existing Contract ");
@@ -41,6 +42,48 @@ router.post("/addContracts", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+const sender = async (postId, auctionId) => {
+  try {
+    const sender = await db.Users.findOne({
+      where: {
+        id: (
+          await db.Posts.findOne({
+            where: {
+              id: postId,
+            },
+          })
+        ).userId,
+      },
+    });
+    const receiver = await db.Users.findOne({
+      where: {
+        id: (
+          await db.Auctions.findOne({
+            where: {
+              id: auctionId,
+            },
+          })
+        ).userId,
+      },
+    });
+    const [userCreated, createdo] = await db.Conversations.findOrCreate({
+      where: { senderId: sender.id, receiverId: receiver.id },
+      defaults: {
+        senderId: sender.id,
+        senderName: sender.name,
+        senderImg:
+          "http://c.files.bbci.co.uk/48DD/production/_107435681_perro1.jpg",
+        receiverId: receiver.id,
+        receiverName: receiver.name,
+        receiverImg:
+          "http://c.files.bbci.co.uk/48DD/production/_107435681_perro1.jpg",
+      },
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 router.get("/getContracts", async (req, res) => {
   try {

@@ -10,7 +10,7 @@ router.use(cors());
 router.post("/Addpostulates", async (req, res) => {
   try {
     const { date, offer, comment, postId, professionalId, userId } = req.body;
-
+    //userId corresponde al id de usuario del profesional
     const [auctionCreated, created] = await db.Auctions.findOrCreate({
       where: {
         [Op.and]: [
@@ -179,6 +179,11 @@ router.get("/traerPostByProfessionals/:id", async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
+});
+
+router.get("/auctions", async (req, res) => {
+  const auctions = await db.Auctions.findAll({});
+  res.json(auctions);
 });
 
 module.exports = router;

@@ -26,6 +26,11 @@ router.put("/editprofessional", async (req, res) => {
     state,
     city,
     country,
+    nivelDeEstudio,
+    institucion,
+    titulo,
+    date_inicioEstudio,
+    date_finicioEstudio,
   } = req.body;
 
   try {
@@ -54,6 +59,11 @@ router.put("/editprofessional", async (req, res) => {
           trainings: trainings,
           photo: photo,
           cvu: cvu,
+          nivelDeEstudio: nivelDeEstudio,
+          institucion: institucion,
+          titulo: titulo,
+          date_inicioEstudio: date_inicioEstudio,
+          date_finicioEstudio: date_finicioEstudio,
         });
       }
       if (res1[1]) {

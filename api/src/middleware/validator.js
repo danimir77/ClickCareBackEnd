@@ -49,8 +49,8 @@ const userValidationRules = () => {
       .notEmpty()
       .withMessage("Should not be empty"),
     body("age")
-      .isNumeric("en-US")
-      .withMessage("Should be numeric")
+      //.isNumeric("en-US")
+      //.withMessage("Should be numeric")
       .notEmpty()
       .withMessage("Should not be empty"),
     body("document")

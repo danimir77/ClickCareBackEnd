@@ -3,22 +3,28 @@ const { DataTypes } = require("sequelize");
 // Luego le injectamos la conexion a sequelize.
 module.exports = (sequelize) => {
   // defino el modelo
-  sequelize.define("taxes", {
-    taxDescription: {
-      type: DataTypes.STRING,
-      allowNull: true,
+  sequelize.define(
+    "taxes",
+    {
+      taxDescription: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      tax: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+      },
+      date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     },
-    tax: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    active: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-    },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-  });
+    {
+      timestamps: false,
+    }
+  );
 };

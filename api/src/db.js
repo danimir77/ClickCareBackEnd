@@ -58,7 +58,7 @@ const {
   Auctions,
   Contracts,
 } = sequelize.models;
-// console.log(sequelize.models);
+//console.log(sequelize.models);
 States.hasMany(Users);
 Users.belongsTo(States);
 
