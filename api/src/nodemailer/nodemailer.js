@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 const { host, port, secure, auth } = require("./config");
-const bcrypt = require("bcrypt");
 
 const transporter = nodemailer.createTransport({
   host: host,
@@ -19,15 +18,15 @@ function sendEmailToValidate(emailTo, userId, name, surname) {
   // let hashId = bcrypt.hashSync(String(userId), 10);
   // hashId.replaceAll('/', "SLASH");
   if (userId) {
-    console.log("userId-->> ", userId);
     const mailOptions = {
       from: auth.user,
       to: emailTo,
-      subject: "ClickCare - User Validation",
-      html: `<p>Hello ${name} ${surname},
-      ClickCare is a platform that allows you to manage your health and your life.</p>
-      <p>To validate your account, please click on the link. If you have any questions, please contact us.</p>
-      <p>Thank you for using ClickCare.</p><a href="${process.env.URL_CLIENT}/welcome/${userId}">Click here</a><br>
+      subject: "ClickCare - Validación de email",
+      html: `<p>Bienvenida/o ${name} ${surname},
+      ClickCare es una plataforma que le permitirá acceder a una importante red de profesionales de la salud.</p>
+      
+      <p>A fin de validar su email, por favor haga click en el link siguiente. Si Usted tiene alguna consulta o sugerencia no dude en contactarnos.</p>
+      <p>Gracias por utilizar ClickCare.</p><a href="${process.env.URL_CLIENT}/welcome/${userId}">Presione aquí para validar su email</a><br>
       `,
     }; //userValidationProcess
 
@@ -40,7 +39,7 @@ function sendEmailToValidate(emailTo, userId, name, surname) {
       }
     });
   } else {
-    console.log("userId not found");
+    console.log("Id de Usuario no existe");
   }
 }
 
@@ -49,7 +48,7 @@ function sendSimpleEmail(emailTo, subject, text, name, surname) {
     from: auth.user,
     to: emailTo,
     subject: subject,
-    html: `<p>Hello ${name} ${surname}.</p><p>${text}</p><a href="${process.env.URL_MAIL}/">Welcom to ClickCare!</a>`,
+    html: `<p>Bienvenida/o ${name} ${surname}.</p><p>${text}</p><a href="${process.env.URL_MAIL}/">Acceda a ClickCare!</a>`,
   };
 
   console.log("mailOptions", mailOptions);

@@ -33,6 +33,7 @@ module.exports = (sequelize) => {
       status: {
         type: DataTypes.STRING,
         allowNull: true,
+        defaultValue: "activo",
       },
       score_user: {
         type: DataTypes.INTEGER,

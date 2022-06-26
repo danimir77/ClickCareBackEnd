@@ -122,6 +122,7 @@ router.get("/infoDetallePost/:id", async (req, res) => {
               "document",
               "email",
               "phone2",
+              "photo",
             ],
             //required: true,
           },
@@ -161,6 +162,7 @@ router.get("/infoDetallePost/:id", async (req, res) => {
 router.get("/infoCardPost", async (req, res) => {
   try {
     const posts = await db.Posts.findAll({
+      where: { active: 1 },
       attributes: [
         "id",
         "hour_post",
@@ -178,7 +180,7 @@ router.get("/infoCardPost", async (req, res) => {
       include: [
         {
           model: db.Users,
-          attributes: ["id", "name", "surname", "age"],
+          attributes: ["id", "name", "surname", "age", "photo"],
 
           //required: true,
         },
@@ -340,6 +342,7 @@ router.get("/posteosUsersByUserID/:id", async (req, res) => {
               "document",
               "email",
               "phone2",
+              "photo",
             ],
             //required: true,
           },
@@ -367,7 +370,7 @@ router.get("/posteosUsersByUserID/:id", async (req, res) => {
             include: [
               {
                 model: db.Professionals,
-                attributes: ["id", "trainings", "photo"],
+                attributes: ["id", "trainings"],
                 // include: [
                 //   {
                 //     model: db.Users,

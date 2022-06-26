@@ -5,73 +5,71 @@ const userValidationRules = () => {
   return [
     body("name")
       .isLength({ min: 3 }, { max: 20 })
-      .withMessage("Should be Between 3 and 20 characters")
+      .withMessage("Debe tener entre 3 y 20 caracteres")
       .isAlpha("es-ES", { ignore: " " })
-      .withMessage("Should be alphanumerico")
+      .withMessage("Debe ser alfanumérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("surname")
       .isLength({ min: 3 }, { max: 20 })
-      .withMessage("Should be Between 3 and 20 characters")
+      .withMessage("Debe tener entre 3 y 20 caracteres")
       .isAlpha("es-ES", { ignore: " " })
-      .withMessage("Should be alphanumeric")
+      .withMessage("Debe ser alfanumérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("password")
-      .isString()
-      .withMessage("Should be string")
       .isLength({ min: 4 })
-      .withMessage("Should be at least 8 characters")
+      .withMessage("Debe tener al menos 8 caracteres.")
       .not()
       .isLowercase()
-      .withMessage("Should contain at least one uppercase letter")
+      .withMessage("Debe contener al menos una letra mayúscula")
       .not()
       .isUppercase()
-      .withMessage("Should contain at least one lowercase letter")
+      .withMessage("Debe contener al menos una letra minúscula")
       .not()
       .isNumeric()
-      .withMessage("Should contain at least one number")
+      .withMessage("Debe contener al menos un número")
       .not()
       .isAlpha()
-      .withMessage("Should contain at least one alphanumeric character")
+      .withMessage("Debe contener al menos un carácter alfanumérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("phone")
       .isLength({ min: 3 }, { max: 20 })
-      .withMessage("Should be Between 3 and 20 characters")
+      .withMessage("Debe tener entre 3 y 20 caracteres")
       .isNumeric("en-US")
-      .withMessage("Should be numeric")
+      .withMessage("Debe ser numérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("address")
       .isLength({ min: 5 }, { max: 100 })
-      .withMessage("Should be Between 5 and 100 characters")
+      .withMessage("Debe tener entre 5 y 100 caracteres")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("age")
       //.isNumeric("en-US")
-      //.withMessage("Should be numeric")
+      //.withMessage("Debe ser numérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("document")
       .isLength({ min: 5 }, { max: 20 })
-      .withMessage("Should be Between 5 and 20 characters")
+      .withMessage("Debe tener entre 5 y 20 caracteres")
       .isNumeric("en-US")
-      .withMessage("Should be numeric")
+      .withMessage("Debe ser numérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("email")
       .isEmail()
-      .withMessage("Should be email")
+      .withMessage("Debe ser un correo electrónico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("phone2")
       .isLength({ min: 5 }, { max: 20 })
-      .withMessage("Should be Between 5 and 20 characters")
+      .withMessage("Debe tener entre 5 y 20 caracteres")
       .isNumeric("en-US")
-      .withMessage("Should be numeric"),
+      .withMessage("Debe ser numérico"),
     // .notEmpty()
-    // .withMessage("Should not be empty"),
+    // .withMessage("No debe estar vacío"),
   ];
 };
 //RECORDAR EXPORTARLO ABAJO!!
@@ -79,26 +77,26 @@ const profValidationRules = () => {
   return [
     body("tuition")
       .isLength({ max: 255 })
-      .withMessage("Should be less than 255 characters")
+      .withMessage("Debe tener menos de 255 caracteres.")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("trainings")
       .isLength({ max: 255 })
-      .withMessage("Should be less than 255 characters")
+      .withMessage("Debe tener menos de 255 caracteres.")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("photo")
       .isLength({ max: 50 })
-      .withMessage("Should be less than 50 characters")
+      .withMessage("Debe tener menos de 50 caracteres")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("cvu")
       .isLength({ min: 0 }, { max: 22 })
-      .withMessage("Should be less than 22 characters")
+      .withMessage("Debe tener menos de 22 caracteres")
       .isNumeric()
-      .withMessage("Should be numeric.")
+      .withMessage("Debe ser numérico.")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
   ];
 };
 //RECORDAR EXPORTARLO ABAJO!!
@@ -106,28 +104,28 @@ const userValidShortReg = () => {
   return [
     body("password")
       .isString()
-      .withMessage("Should be string")
+      .withMessage("Debe ser un texto")
       .isLength({ min: 4 })
-      .withMessage("Should be at least 8 characters")
+      .withMessage("Debe tener al menos 8 caracteres.")
       .not()
       .isLowercase()
-      .withMessage("Should contain at least one lowercase letter")
+      .withMessage("Debe contener al menos una letra minúscula")
       .not()
       .isUppercase()
-      .withMessage("Should contain at least one uppercase letter")
+      .withMessage("Debe contener al menos una letra mayúscula")
       .not()
       .isNumeric()
-      .withMessage("Should contain at least one number")
+      .withMessage("Debe contener al menos un número")
       .not()
       .isAlpha()
-      .withMessage("Should contain at least one alphanumeric character")
+      .withMessage("Debe contener al menos un carácter alfanumérico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
     body("email")
       .isEmail()
-      .withMessage("Should be email")
+      .withMessage("Debe ser un correo electrónico")
       .notEmpty()
-      .withMessage("Should not be empty"),
+      .withMessage("No debe estar vacío"),
   ];
 };
 //RECORDAR EXPORTARLO ABAJO!!
@@ -144,9 +142,20 @@ const validate = (req, res, next) => {
   });
 };
 
+const userValidGoogle = () => {
+  return [
+    body("email")
+      .isEmail()
+      .withMessage("Debe ser un correo electrónico")
+      .notEmpty()
+      .withMessage("No debe estar vacío"),
+  ];
+};
+
 module.exports = {
   userValidationRules,
   userValidShortReg,
   profValidationRules,
   validate,
+  userValidGoogle,
 };

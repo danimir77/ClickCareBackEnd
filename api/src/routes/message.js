@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-//const axios = require("axios");
-//const { Message } = require("../db");
-
+const db = require("../db.js");
 const cors = require("cors");
 router.use(
   cors({
@@ -16,7 +14,7 @@ router.use(express.json());
 router.post("/message", async (req, res) => {
   const { text, conversationId, sender } = req.body;
   try {
-    const mensaje = await db.Message.create({
+    const mensaje = await db.Messages.create({
       text: text,
       conversationId: conversationId,
       sender: sender,
@@ -29,7 +27,7 @@ router.post("/message", async (req, res) => {
 router.get("/allmessage/:conversationId", async (req, res) => {
   const { conversationId } = req.params;
   try {
-    const allmessage = await db.Message.findAll({
+    const allmessage = await db.Messages.findAll({
       where: {
         conversationId: conversationId,
       },

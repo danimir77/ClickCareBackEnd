@@ -5,11 +5,18 @@ const db = require("../db.js");
 const router = Router();
 router.use(express.json());
 const cors = require("cors");
-router.use(cors());
+router.use(
+  cors({
+    origin: true,
+    credentials: true,
+    //allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 router.post("/addContracts", async (req, res) => {
   try {
     const { date, offer, hour, postId, auctionId } = req.body;
+
     const [contractCreates, created] = await db.Contracts.findOrCreate({
       where: {
         [Op.and]: [{ postId: postId }, { status: "active" }],
@@ -30,6 +37,16 @@ router.post("/addContracts", async (req, res) => {
         {
           where: {
             id: auctionId,
+          },
+        }
+      );
+      await db.Posts.update(
+        {
+          active: false,
+        },
+        {
+          where: {
+            id: postId,
           },
         }
       );
@@ -124,13 +141,13 @@ router.get("/getContracts", async (req, res) => {
                 },
                 {
                   model: db.Users,
-                  attributes: ["name", "surname", "email", "phone"],
+                  attributes: ["name", "surname", "email", "phone", "photo"],
                 },
               ],
             },
             {
               model: db.Professionals,
-              attributes: ["cvu", "photo"],
+              attributes: ["cvu"],
               include: [
                 {
                   model: db.Users,
@@ -141,6 +158,7 @@ router.get("/getContracts", async (req, res) => {
                     "age",
                     "document",
                     "email",
+                    "photo",
                   ],
                   include: [
                     {
@@ -216,13 +234,13 @@ router.get("/infoDetalleContracts/:id", async (req, res) => {
                   },
                   {
                     model: db.Users,
-                    attributes: ["name", "surname", "email", "phone"],
+                    attributes: ["name", "surname", "email", "phone", "photo"],
                   },
                 ],
               },
               {
                 model: db.Professionals,
-                attributes: ["cvu", "photo"],
+                attributes: ["cvu"],
                 include: [
                   {
                     model: db.Users,
@@ -233,6 +251,7 @@ router.get("/infoDetalleContracts/:id", async (req, res) => {
                       "age",
                       "document",
                       "email",
+                      "photo",
                     ],
                     include: [
                       {

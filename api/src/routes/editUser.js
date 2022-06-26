@@ -7,6 +7,7 @@ router.use(cors());
 
 router.put("/edituser", async (req, res) => {
   const {
+    id,
     email,
     password,
     name,
@@ -19,11 +20,12 @@ router.put("/edituser", async (req, res) => {
     state,
     city,
     country,
+    photo,
   } = req.body;
 
   try {
     const userFinded = await db.Users.findOne({
-      where: { email: email },
+      where: { id: id },
     });
     if (userFinded) {
       const hash = bcrypt.hashSync(password, 10);
@@ -37,6 +39,7 @@ router.put("/edituser", async (req, res) => {
         age: age,
         document: document,
         phone2: phone2,
+        photo: photo,
         stateId: state
           ? (
               await db.States.findOne({ where: { name: state } })

@@ -5,7 +5,13 @@ const db = require("../db.js");
 const router = Router();
 router.use(express.json());
 const cors = require("cors");
-router.use(cors());
+router.use(
+  cors({
+    origin: true, //process.env.URL_CLIENT,
+    credentials: true,
+    //allowedHeaders: "Content-Type, Authorization",
+  })
+);
 
 router.post("/Addpostulates", async (req, res) => {
   try {
@@ -73,6 +79,7 @@ router.get("/traerPostByAuction/:id", async (req, res) => {
               "document",
               "email",
               "phone2",
+              "photo",
             ],
             //required: true,
           },
@@ -100,11 +107,11 @@ router.get("/traerPostByAuction/:id", async (req, res) => {
             include: [
               {
                 model: db.Professionals,
-                attributes: ["id", "trainings", "photo"],
+                attributes: ["id", "trainings"],
                 include: [
                   {
                     model: db.Users,
-                    attributes: ["name", "surname", "age"],
+                    attributes: ["name", "surname", "age", "photo"],
                   },
                 ],
               },
