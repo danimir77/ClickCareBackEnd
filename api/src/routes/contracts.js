@@ -89,12 +89,10 @@ const sender = async (postId, auctionId) => {
       defaults: {
         senderId: sender.id,
         senderName: sender.name,
-        senderImg:
-          "http://c.files.bbci.co.uk/48DD/production/_107435681_perro1.jpg",
+        senderImg: sender.photo,
         receiverId: receiver.id,
         receiverName: receiver.name,
-        receiverImg:
-          "http://c.files.bbci.co.uk/48DD/production/_107435681_perro1.jpg",
+        receiverImg: receiver.photo,
       },
     });
   } catch (error) {
@@ -105,7 +103,15 @@ const sender = async (postId, auctionId) => {
 router.get("/getContracts", async (req, res) => {
   try {
     const contracts = await db.Contracts.findAll({
-      attributes: ["id", "price", "date", "hour", "postId"],
+      attributes: [
+        "id",
+        "price",
+        "date",
+        "hour",
+        "postId",
+        "status",
+        "paidout",
+      ],
       include: [
         {
           model: db.Auctions,
@@ -141,17 +147,25 @@ router.get("/getContracts", async (req, res) => {
                 },
                 {
                   model: db.Users,
-                  attributes: ["name", "surname", "email", "phone", "photo"],
+                  attributes: [
+                    "id",
+                    "name",
+                    "surname",
+                    "email",
+                    "phone",
+                    "photo",
+                  ],
                 },
               ],
             },
             {
               model: db.Professionals,
-              attributes: ["cvu"],
+              attributes: ["id", "cvu"],
               include: [
                 {
                   model: db.Users,
                   attributes: [
+                    "id",
                     "name",
                     "surname",
                     "phone",
@@ -198,7 +212,15 @@ router.get("/infoDetalleContracts/:id", async (req, res) => {
     if (id && Number.isInteger(parseInt(id))) {
       const contracts = await db.Contracts.findAll({
         where: { id: parseInt(id) },
-        attributes: ["id", "price", "date", "hour", "postId"],
+        attributes: [
+          "id",
+          "price",
+          "date",
+          "hour",
+          "postId",
+          "status",
+          "paidout",
+        ],
         include: [
           {
             model: db.Auctions,
@@ -234,17 +256,25 @@ router.get("/infoDetalleContracts/:id", async (req, res) => {
                   },
                   {
                     model: db.Users,
-                    attributes: ["name", "surname", "email", "phone", "photo"],
+                    attributes: [
+                      "id",
+                      "name",
+                      "surname",
+                      "email",
+                      "phone",
+                      "photo",
+                    ],
                   },
                 ],
               },
               {
                 model: db.Professionals,
-                attributes: ["cvu"],
+                attributes: ["id", "cvu"],
                 include: [
                   {
                     model: db.Users,
                     attributes: [
+                      "id",
                       "name",
                       "surname",
                       "phone",
@@ -281,6 +311,96 @@ router.get("/infoDetalleContracts/:id", async (req, res) => {
       }
     } else {
       res.status(422).send("No envió un ID");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.put("/score_a_Profesional", async (req, res) => {
+  try {
+    const { id, score, comments } = req.body;
+    if (!id) {
+      return res.status(400).send("No hay un  contrato seleccionado");
+    }
+    if (!score) {
+      return res.status(400).send("No ingresó un score");
+    }
+    const scoreado = await db.Contracts.findOne({
+      where: {
+        [Op.or]: [
+          {
+            [Op.and]: [{ id: id }, { status: "activo" }],
+          },
+          {
+            [Op.and]: [
+              { id: id },
+              { status: "terminado" },
+              { score_professional: null },
+            ],
+          },
+        ],
+      },
+    });
+
+    if (scoreado) {
+      await scoreado.update({
+        score_professional: score,
+        comments: comments,
+      });
+      return res
+        .status(200)
+        .send(`Socore de ${score} a professional por el usuario`);
+    } else {
+      return res
+        .status(200)
+        .send(`Ya fue calificado por el usuario y el contrato está terminado`);
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.put("/score_a_Usuario", async (req, res) => {
+  try {
+    const { id, score, comments } = req.body;
+    if (!id) {
+      return res.status(400).send("No hay un  contrato seleccionado");
+    }
+    if (!score) {
+      return res.status(400).send("No ingresó un score");
+    }
+    const scoreado = await db.Contracts.findOne({
+      where: {
+        [Op.or]: [
+          {
+            [Op.and]: [{ id: id }, { status: "activo" }],
+          },
+          {
+            [Op.and]: [
+              { id: id },
+              { status: "terminado" },
+              { score_professional: null },
+            ],
+          },
+        ],
+      },
+    });
+
+    if (scoreado) {
+      await scoreado.update({
+        score_user: score,
+        comments: comments,
+      });
+      return res
+        .status(200)
+        .send(`Socore de ${score} a usuario por el professional`);
+    } else {
+      return res
+        .status(200)
+        .send(
+          `Ya fue calificado por el profesional y el contrato está terminado`
+        );
     }
   } catch (error) {
     res.status(400).send(error);

@@ -85,11 +85,11 @@ const profValidationRules = () => {
       .withMessage("Debe tener menos de 255 caracteres.")
       .notEmpty()
       .withMessage("No debe estar vacío"),
-    body("photo")
-      .isLength({ max: 50 })
-      .withMessage("Debe tener menos de 50 caracteres")
-      .notEmpty()
-      .withMessage("No debe estar vacío"),
+    // body("photo")
+    //   .isLength({ max: 50 })
+    //   .withMessage("Debe tener menos de 50 caracteres")
+    //   .notEmpty()
+    //   .withMessage("No debe estar vacío"),
     body("cvu")
       .isLength({ min: 0 }, { max: 22 })
       .withMessage("Debe tener menos de 22 caracteres")
@@ -152,10 +152,35 @@ const userValidGoogle = () => {
   ];
 };
 
+const userValidForgetPassword = () => {
+  return [
+    body("password")
+      .isString()
+      .withMessage("Debe ser un texto")
+      .isLength({ min: 4 })
+      .withMessage("Debe tener al menos 8 caracteres.")
+      .not()
+      .isLowercase()
+      .withMessage("Debe contener al menos una letra minúscula")
+      .not()
+      .isUppercase()
+      .withMessage("Debe contener al menos una letra mayúscula")
+      .not()
+      .isNumeric()
+      .withMessage("Debe contener al menos un número")
+      .not()
+      .isAlpha()
+      .withMessage("Debe contener al menos un carácter alfanumérico")
+      .notEmpty()
+      .withMessage("No debe estar vacío"),
+  ];
+};
+
 module.exports = {
   userValidationRules,
   userValidShortReg,
   profValidationRules,
   validate,
   userValidGoogle,
+  userValidForgetPassword,
 };

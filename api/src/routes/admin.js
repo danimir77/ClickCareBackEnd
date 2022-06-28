@@ -175,6 +175,58 @@ router.put("/activePost/:id", async (req, res) => {
 //?--------------------------------------------------
 
 //?**----USERS-----------------------------------
+router.get("/Allusers", async (req, res) => {
+  try {
+    const users = await db.Users.findAll({
+      include: [
+        {
+          model: db.Cities,
+          attributes: ["name"],
+          //required: true,
+        },
+        {
+          model: db.States,
+          attributes: ["name"],
+          //required: true,
+        },
+        {
+          model: db.Countries,
+          attributes: ["name"],
+          //required: true,
+        },
+      ],
+    });
+
+    if (users.length > 0) {
+      const trabajado = users.map((e) => {
+        return {
+          id: e.id,
+          name: e.name,
+          surname: e.surname,
+          phone: e.phone,
+          address: e.address,
+          nacimiento: e.age,
+          document: e.document,
+          estado: e.active,
+          email: e.email,
+          phone2: e.phone2,
+          validated_email: e.validated_email,
+          photo: e.photo,
+          userType: e.userType,
+          city: e.city.name,
+          state: e.state.name,
+          country: e.country.name,
+        };
+      });
+      res.status(201).json(trabajado);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 router.get("/AllusersActive", async (req, res) => {
   try {
     const users = await db.Users.findAll({
@@ -946,6 +998,7 @@ router.put("/canceladoContract/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
 //?**-------------------------------------------------------
 
 //?-----OFFERS-------------------------------------------

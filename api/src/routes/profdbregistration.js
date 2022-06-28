@@ -12,7 +12,7 @@ router.use(express.json());
 const cors = require("cors");
 router.use(cors());
 //----
-console.log("ENTRO A profdbregistration.js");
+//console.log("ENTRO A profdbregistration.js");
 
 router.post(
   "/profdbregistration",

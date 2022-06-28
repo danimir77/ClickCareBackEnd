@@ -103,7 +103,14 @@ router.get("/traerPostByAuction/:id", async (req, res) => {
           },
           {
             model: db.Auctions,
-            attributes: ["date", "offer", "comment", "approved", "cancel"],
+            attributes: [
+              "id",
+              "date",
+              "offer",
+              "comment",
+              "approved",
+              "cancel",
+            ],
             include: [
               {
                 model: db.Professionals,
@@ -169,6 +176,66 @@ router.get("/traerPostByProfessionals/:id", async (req, res) => {
                 model: db.Countries,
                 attributes: ["name"],
                 //required: true,
+              },
+            ],
+          },
+        ],
+      });
+
+      if (posts.length > 0) {
+        res.status(201).json(posts);
+      } else {
+        res.status(422).json("Not found");
+      }
+    } else {
+      res.status(422).send("No envió un ID");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+router.get("/traerPostByProfessionalsByContract/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id && Number.isInteger(parseInt(id))) {
+      const posts = await db.Auctions.findAll({
+        where: { professionalId: id },
+        attributes: ["id", "date", "offer", "comment"],
+        include: [
+          {
+            model: db.Posts,
+            attributes: [
+              "date_post",
+              "date_ini",
+              "date_fin",
+              "needs",
+              "locationReference",
+              "availableTime_0",
+              "availableTime_1",
+              "agePatient",
+              "namePatient",
+              "addressPatient",
+            ],
+            include: [
+              {
+                model: db.Cities,
+                attributes: ["name"],
+              },
+              {
+                model: db.States,
+                attributes: ["name"],
+              },
+              {
+                model: db.Countries,
+                attributes: ["name"],
+                //required: true,
+              },
+            ],
+            include: [
+              {
+                model: db.Contracts,
               },
             ],
           },
