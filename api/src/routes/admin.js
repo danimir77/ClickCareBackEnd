@@ -8,6 +8,62 @@ const cors = require("cors");
 router.use(cors());
 
 //?----POSTS---------------------------------------
+router.get("/Allposts", async (req, res) => {
+  try {
+    const posts = await db.Posts.findAll({
+      attributes: [
+        "id",
+        "active",
+        "hour_post",
+        "date_post",
+        "date_ini",
+        "date_fin",
+        "needs",
+        "availableTime_0",
+        "availableTime_1",
+        "agePatient",
+        "namePatient",
+        "addressPatient",
+      ],
+
+      include: [
+        {
+          model: db.Users,
+          attributes: ["id", "name", "surname", "age"],
+
+          //required: true,
+        },
+        {
+          model: db.Specialties,
+          attributes: ["specialty"],
+          //required: true,
+        },
+        {
+          model: db.Cities,
+          attributes: ["name"],
+        },
+        {
+          model: db.States,
+          attributes: ["name"],
+        },
+        {
+          model: db.Countries,
+          attributes: ["name"],
+          //required: true,
+        },
+      ],
+    });
+
+    if (posts.length > 0) {
+      res.status(201).json(posts);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (error) {
+    res.send(error);
+  }
+});
+
 router.get("/AllpostsActive", async (req, res) => {
   try {
     const posts = await db.Posts.findAll({
@@ -521,7 +577,13 @@ router.put("/userUsuario/:id", async (req, res) => {
 router.get("/AllprofessionalsActive", async (req, res) => {
   try {
     const professional = await db.Professionals.findAll({
-      where: { active: true },
+      //where: { active: true },
+      include: [
+        {
+          attributes: ["name", "surname"],
+          model: db.Users,
+        },
+      ],
     });
 
     if (professional.length > 0) {
@@ -656,6 +718,95 @@ router.put("/balance_1/:id", async (req, res) => {
 //?---------------------------------------------------------------
 
 //?**----CONTRACTS -------------------------------------
+router.get("/AllContracts", async (req, res) => {
+  try {
+    const contracts = await db.Contracts.findAll({
+      attributes: ["id", "status", "price", "date", "hour", "postId"],
+      include: [
+        {
+          model: db.Auctions,
+          attributes: ["id", "cancel", "offer", "comment", "approved"],
+
+          include: [
+            {
+              model: db.Posts,
+              attributes: [
+                "date_post",
+                "date_ini",
+                "date_fin",
+                "needs",
+                "active",
+                "locationReference",
+                "contact_phone",
+                "agePatient",
+                "namePatient",
+                "addressPatient",
+              ],
+              include: [
+                {
+                  model: db.Cities,
+                  attributes: ["name"],
+                },
+                {
+                  model: db.States,
+                  attributes: ["name"],
+                },
+                {
+                  model: db.Countries,
+                  attributes: ["name"],
+                },
+                {
+                  model: db.Users,
+                  attributes: ["name", "surname", "email", "phone", "photo"],
+                },
+              ],
+            },
+            {
+              model: db.Professionals,
+              attributes: ["cvu"],
+              include: [
+                {
+                  model: db.Users,
+                  attributes: [
+                    "name",
+                    "surname",
+                    "phone",
+                    "age",
+                    "document",
+                    "email",
+                    "photo",
+                  ],
+                  include: [
+                    {
+                      model: db.Cities,
+                      attributes: ["name"],
+                    },
+                    {
+                      model: db.States,
+                      attributes: ["name"],
+                    },
+                    {
+                      model: db.Countries,
+                      attributes: ["name"],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+    if (contracts.length > 0) {
+      res.status(201).json(contracts);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 router.get("/AllContractsActivo", async (req, res) => {
   try {
     const contracts = await db.Contracts.findAll({
@@ -1008,7 +1159,7 @@ router.get("/AllAuctions", async (req, res) => {
 
     const posts = await db.Auctions.findAll({
       where: { cancel: 0 },
-      attributes: ["id", "date", "offer", "comment"],
+      attributes: ["id", "cancel", "date", "offer", "comment"],
       include: [
         {
           model: db.Posts,
@@ -1273,5 +1424,49 @@ router.put("/activeAuction/:id", async (req, res) => {
   }
 });
 //?--------------------------------------------------------
+//!---------------------------INDICADORES--------------------------
+router.get("/indicadores", async (req, res) => {
+  try {
+    let obj = {
+      usuarios: {},
+    };
+    var { count, rows } = await db.Users.findAndCountAll({
+      where: { active: 1 },
+    });
+    obj.usuarios = count;
+
+    var { count, rows } = await db.Professionals.findAndCountAll({
+      where: { active: 1 },
+    });
+    obj.professionals = count;
+
+    var { count, rows } = await db.Professionals.findAndCountAll({
+      where: {
+        [Op.and]: [{ active: 1 }, { balance: 1 }],
+      },
+    });
+    obj.members = count;
+    var { count, rows } = await db.Posts.findAndCountAll({
+      where: { active: 1 },
+    });
+    obj.posts = count;
+    var { count, rows } = await db.Auctions.findAndCountAll({
+      where: { cancel: 0 },
+    });
+    obj.aplicaciones = count;
+    var { count, rows } = await db.Contracts.findAndCountAll({
+      where: { status: "activo" },
+    });
+    obj.contractsactive = count;
+    obj.priceactivo = await db.Contracts.sum("price", {
+      where: { status: "activo" },
+    });
+    obj.pricetotal = await db.Contracts.sum("price", {});
+
+    return res.status(200).send(obj);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
 module.exports = router;

@@ -407,4 +407,44 @@ router.put("/score_a_Usuario", async (req, res) => {
   }
 });
 
+router.get("/getContractsByUser/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || !Number.isInteger(parseInt(id))) {
+      return res.status(400).json("No ingresó id correcto");
+    }
+    const contracts = await db.Posts.findAll({
+      where: {
+        [Op.and]: [{ active: 0 }, { userId: id }],
+      },
+      attributes: ["id"],
+      include: [
+        {
+          model: db.Contracts,
+          where: {
+            status: "activo",
+          },
+          attributes: [
+            "id",
+            "price",
+            "date",
+            "hour",
+            "postId",
+            "status",
+            "paidout",
+          ],
+        },
+      ],
+    });
+    if (contracts.length > 0) {
+      res.status(201).json(contracts);
+    } else {
+      res.status(422).json("Not found");
+    }
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 module.exports = router;

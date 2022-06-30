@@ -215,7 +215,7 @@ router.get("/infoCardPost", async (req, res) => {
   }
 });
 
-router.delete("/deletePost/:id", async (req, res) => {
+router.delete("/deletePostxxx/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -394,4 +394,73 @@ router.get("/posteosUsersByUserID/:id", async (req, res) => {
     res.status(400).send(error);
   }
 });
+
+router.get("/searchPost/:needs", async (req, res) => {
+  try {
+    const needs = decodeURI(req.params.needs);
+
+    const posts = await db.Posts.findAll({
+      where: { active: 1 },
+      attributes: [
+        "id",
+        "hour_post",
+        "date_post",
+        "date_ini",
+        "date_fin",
+        "needs",
+        "availableTime_0",
+        "availableTime_1",
+        "agePatient",
+        "namePatient",
+        "addressPatient",
+      ],
+
+      include: [
+        {
+          model: db.Users,
+          attributes: ["id", "name", "surname", "age", "photo"],
+
+          //required: true,
+        },
+        {
+          model: db.Specialties,
+          attributes: ["specialty"],
+          //required: true,
+        },
+        {
+          model: db.Cities,
+          attributes: ["name"],
+        },
+        {
+          model: db.States,
+          attributes: ["name"],
+        },
+        {
+          model: db.Countries,
+          attributes: ["name"],
+          //required: true,
+        },
+      ],
+    });
+    if (needs) {
+      if (posts) {
+        let postByNeed = await posts.filter((e) =>
+          e.needs.toLowerCase().includes(needs.toString().toLowerCase())
+        );
+        res.status(201).json(postByNeed);
+      } else {
+        res.status(422).json("Not found");
+      }
+    } else {
+      if (posts.length > 0) {
+        res.status(201).json(posts);
+      } else {
+        res.status(422).json("Not found");
+      }
+    }
+  } catch (error) {
+    res.send(error);
+  }
+});
+
 module.exports = router;
