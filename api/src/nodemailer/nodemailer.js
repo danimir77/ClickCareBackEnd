@@ -75,7 +75,7 @@ function sendAuctionEmail(
     from: auth.user,
     to: emailTo,
     subject: "ClickCare -Oferta a su postulación",
-    html: `<p><strong>${username} ${usersurname}</strong> ha recibido una oferta a su necesidad de: ${needs}.</p><p>El profesional <strong>${profname} ${profsurname}</strong> respondió con una oferta de: <strong>$${offer}</strong></p>${comment}<p>Gracias por utilizar ClickCare.</p><a href="${process.env.URL_CLIENT_MAIL}"></a><br>`,
+    html: `<p><strong>${username} ${usersurname}</strong> ha recibido una oferta a su necesidad de: ${needs}.</p><p>El profesional <strong>${profname} ${profsurname}</strong> respondió con una oferta de: <strong>$${offer}</strong></p>${comment}<p>Gracias por utilizar ClickCare.</p><a href="${process.env.URL_CLIENT_MAIL}/">Acceda a ClickCare!</a><br>`,
   };
 
   console.log("mailOptions", mailOptions);
@@ -88,6 +88,36 @@ function sendAuctionEmail(
   });
 }
 
+function sendContractEmail(
+  emailTo,
+  username,
+  usersurname,
+  offer,
+  profname,
+  profsurname,
+  needs
+) {
+  const mailOptions = {
+    from: auth.user,
+    to: emailTo,
+    subject: "ClickCare -Propuesta aceptada!!!",
+    html: `<p><strong>${profname} ${profsurname}</strong> su propuesta por: ${needs} con una oferta de $${offer} ha sido aceptada.</p><br><p>Pónganse en contacto con <strong>${username} ${usersurname}</strong>, seguro lo estará esperando.</p><p>Gracias por utilizar ClickCare.</p><a href="${process.env.URL_CLIENT_MAIL}/">Acceda a ClickCare!</a><br>`,
+  };
+
+  console.log("mailOptions", mailOptions);
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+}
 // sendEmail("dlorko@gmail.com", "prueba", "prueba texto");
 
-module.exports = { sendEmailToValidate, sendSimpleEmail, sendAuctionEmail };
+module.exports = {
+  sendEmailToValidate,
+  sendSimpleEmail,
+  sendAuctionEmail,
+  sendContractEmail,
+};

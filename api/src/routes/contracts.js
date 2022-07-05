@@ -5,6 +5,7 @@ const db = require("../db.js");
 const router = Router();
 router.use(express.json());
 const cors = require("cors");
+const { sendContractEmail } = require("../nodemailer/nodemailer.js");
 router.use(
   cors({
     origin: true,
@@ -19,7 +20,7 @@ router.post("/addContracts", async (req, res) => {
 
     const [contractCreates, created] = await db.Contracts.findOrCreate({
       where: {
-        [Op.and]: [{ postId: postId }, { status: "active" }],
+        [Op.and]: [{ postId: postId }, { status: "activo" }],
       },
       defaults: {
         date: date,
@@ -50,8 +51,34 @@ router.post("/addContracts", async (req, res) => {
           },
         }
       );
-      sender(postId, auctionId);
-      res.status(200).send("Contract created");
+
+      const posts = await db.Posts.findOne({
+        where: { id: postId },
+        raw: true,
+      });
+      const auctions = await db.Auctions.findOne({
+        where: { id: auctionId },
+        raw: true,
+      });
+      const users = await db.Users.findAll({ raw: true });
+
+      return Promise.all([posts, auctions, users]).then((res1, res2) => {
+        var userId = res1[0].userId;
+        var profesionalId = res1[1].userId;
+        var usuario = res1[2].find((user) => user.id === userId);
+        var profesional = res1[2].find((user) => user.id === profesionalId);
+        sendContractEmail(
+          profesional.email,
+          usuario.name,
+          usuario.surname,
+          offer,
+          profesional.name,
+          profesional.surname,
+          res1[0].needs
+        );
+        sender(postId, auctionId);
+        res.status(200).send("Contract created");
+      });
     } else {
       res.status(422).send("Existing Contract ");
     }

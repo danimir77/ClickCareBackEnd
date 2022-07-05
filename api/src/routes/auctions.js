@@ -39,7 +39,7 @@ router.post("/Addpostulates", async (req, res) => {
     if (created) {
       res.status(200).send("Auction created");
       //busco el profesional por su id
-      const professional = await db.Users.findOne({
+      const professional = await db.Professionals.findOne({
         where: { id: professionalId },
       });
       //traigo las needs desde el posteo
@@ -53,10 +53,11 @@ router.post("/Addpostulates", async (req, res) => {
       });
 
       return Promise.all([professional, post, users]).then((res1, res2) => {
-        var profesional = res1[0];
+        // var profesional = res1[0];
         var posteo = res1[1];
 
         var usuario = res1[2].find((user) => user.id === posteo.userId);
+        var profesional = res1[2].find((user) => user.id === res1[0].id);
 
         sendAuctionEmail(
           usuario.email,
